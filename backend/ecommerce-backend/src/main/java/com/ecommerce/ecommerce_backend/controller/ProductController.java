@@ -1,9 +1,12 @@
 package com.ecommerce.ecommerce_backend.controller;
 
-import com.ecommerce.ecommerce_backend.model.Product;
+import com.ecommerce.ecommerce_backend.dto.product.ProductRequest;
+import com.ecommerce.ecommerce_backend.dto.product.ProductResponse;
 import com.ecommerce.ecommerce_backend.service.ProductService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
@@ -19,32 +22,55 @@ public class ProductController {
     }
 
     @GetMapping
-    public List<Product> getAllProducts() {
-        return productService.getAllProducts();
+    public Page<ProductResponse> getAllProducts(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam(defaultValue = "asc") String direction) {
+
+        return productService.getAllProducts(
+                page,
+                size,
+                sortBy,
+                direction
+        );
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Product> getProductById(@PathVariable Long id) {
-        return productService.getProductById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    public ProductResponse getProductById(
+            @PathVariable Long id) {
+
+        return productService.getProductById(id);
+    }
+
+    @GetMapping("/search")
+    public List<ProductResponse> searchProducts(
+            @RequestParam String keyword) {
+
+        return productService.searchProducts(keyword);
     }
 
     @PostMapping
-    public Product createProduct(@RequestBody Product product) {
-        return productService.createProduct(product);
+    public ProductResponse createProduct(
+            @Valid @RequestBody ProductRequest request) {
+
+        return productService.createProduct(request);
     }
 
     @PutMapping("/{id}")
-    public Product updateProduct(
+    public ProductResponse updateProduct(
             @PathVariable Long id,
-            @RequestBody Product product) {
-        return productService.updateProduct(id, product);
+            @Valid @RequestBody ProductRequest request) {
+
+        return productService.updateProduct(id, request);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteProduct(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteProduct(
+            @PathVariable Long id) {
+
         productService.deleteProduct(id);
+
         return ResponseEntity.noContent().build();
     }
 }
