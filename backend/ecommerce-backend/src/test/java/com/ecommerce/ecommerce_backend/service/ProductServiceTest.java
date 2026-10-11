@@ -53,11 +53,12 @@ class ProductServiceTest {
         category.setId(1L);
 
         product = new Product(
-                "Laptop",
-                "Professional laptop",
-                new BigDecimal("150000.00"),
-                10
-        );
+        "Laptop",
+        "LAP-001",
+        new BigDecimal("150000.00"),
+        10,
+        "Professional laptop"
+);
 
         product.setId(1L);
         product.setSku("LAP-001");
@@ -132,11 +133,12 @@ class ProductServiceTest {
                 .thenReturn(false);
 
         Product savedProduct = new Product(
-                "Gaming Laptop",
-                "High performance gaming laptop",
-                new BigDecimal("250000.00"),
-                5
-        );
+        "Gaming Laptop",
+        "GAM-001",
+        new BigDecimal("250000.00"),
+        5,
+        "High performance gaming laptop"
+);
 
         savedProduct.setId(2L);
         savedProduct.setSku("GAM-001");
