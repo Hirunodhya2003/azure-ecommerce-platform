@@ -56,3 +56,22 @@ resource "azurerm_subnet" "application" {
   virtual_network_name = azurerm_virtual_network.main.name
   address_prefixes     = ["10.10.2.0/24"]
 }
+
+# Network Security Group for application resources
+resource "azurerm_network_security_group" "application" {
+  name                = "nsg-ecommerce-application"
+  location            = azurerm_resource_group.main.location
+  resource_group_name = azurerm_resource_group.main.name
+
+  tags = {
+    project     = "azure-ecommerce-platform"
+    environment = "dev"
+    managed_by  = "terraform"
+  }
+}
+
+# Associate the NSG with the application subnet
+resource "azurerm_subnet_network_security_group_association" "application" {
+  subnet_id                 = azurerm_subnet.application.id
+  network_security_group_id = azurerm_network_security_group.application.id
+}
