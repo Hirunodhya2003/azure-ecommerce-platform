@@ -44,13 +44,17 @@ public class SecurityConfig {
                         // ==========================
                         // PUBLIC APIs
                         // ==========================
+
+
                         .requestMatchers(
-                                "/api/auth/**",
-                                "/swagger-ui/**",
-                                "/swagger-ui.html",
-                                "/v3/api-docs/**",
-                                "/error"
-                        ).permitAll()
+        "/api/auth/**",
+        "/actuator/health",
+        "/actuator/health/**",
+        "/swagger-ui/**",
+        "/swagger-ui.html",
+        "/v3/api-docs/**",
+        "/error"
+).permitAll()
 
                         // ==========================
                         // PRODUCT APIs
