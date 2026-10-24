@@ -20,23 +20,30 @@ pipeline {
             }
         }
 
-        stage('Backend Build') {
+                stage('Backend Build') {
             steps {
                 dir('backend/ecommerce-backend') {
                     sh '''
+                        export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
+                        export PATH="$JAVA_HOME/bin:$PATH"
+
+                        echo "Using Java compiler:"
+                        javac -version
+
                         if [ -f mvnw ]; then
                             chmod +x mvnw
-                            ./mvnw -B -DskipTests package
+                            ./mvnw -B -DskipTests clean package
                         elif [ -f pom.xml ]; then
-                            mvn -B -DskipTests package
+                            mvn -B -DskipTests clean package
                         else
-                            echo "ERROR: Maven pom.xml or mvnw not found in backend/"
+                            echo "ERROR: Maven pom.xml or mvnw not found"
                             exit 1
                         fi
                     '''
                 }
             }
         }
+       
 
         stage('Frontend Build') {
             steps {
