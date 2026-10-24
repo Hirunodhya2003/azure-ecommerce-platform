@@ -22,7 +22,7 @@ pipeline {
 
         stage('Backend Build') {
             steps {
-                dir('backend') {
+                dir('backend/ecommerce-backend') {
                     sh '''
                         if [ -f mvnw ]; then
                             chmod +x mvnw
