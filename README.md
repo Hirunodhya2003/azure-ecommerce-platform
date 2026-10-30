@@ -16,9 +16,9 @@ The **Azure E-Commerce Platform** is a full-stack e-commerce application develop
 
 The platform provides customer and administrator functionalities, including user authentication, product management, shopping cart management, order processing, and category management.
 
-Alongside application development, this project demonstrates practical DevOps and cloud engineering concepts through containerization, CI/CD automation, infrastructure as code, Kubernetes configurations, and application monitoring.
+Alongside application development, this project demonstrates practical DevOps and cloud engineering concepts through containerization, CI/CD automation, infrastructure as code, Kubernetes orchestration, and application monitoring.
 
-The project aims to demonstrate how a modern web application can be developed, packaged, built, monitored, and prepared for cloud deployment using industry-relevant technologies.
+The project demonstrates how a modern web application can be developed, packaged, built, monitored, and prepared for cloud deployment using industry-relevant technologies.
 
 ### Project Objectives
 
@@ -28,7 +28,7 @@ The project aims to demonstrate how a modern web application can be developed, p
 - Containerize frontend and backend applications using Docker.
 - Automate application builds using GitHub Actions and Jenkins.
 - Define cloud infrastructure using Terraform.
-- Prepare Kubernetes deployment configurations.
+- Deploy and manage application containers using a local Kubernetes cluster with Minikube.
 - Integrate Prometheus and Grafana for monitoring and observability.
 
 ---
@@ -48,7 +48,7 @@ The application follows a three-tier architecture consisting of the presentation
 | Data Layer | MySQL | Persistent application data |
 | Containerization | Docker | Application containerization |
 | CI/CD | GitHub Actions, Jenkins | Automated builds and integration |
-| Orchestration | Kubernetes | Container deployment configurations |
+| Orchestration | Kubernetes | Container deployment and management |
 | Infrastructure | Terraform, Azure | Cloud infrastructure provisioning |
 | Monitoring | Prometheus, Grafana | Metrics collection and visualization |
 
@@ -75,7 +75,7 @@ The application follows a three-tier architecture consisting of the presentation
 | Java | 17 | Backend programming |
 | Spring Boot | 4.1.1 | Backend framework |
 | Spring Data JPA | Spring Boot managed | Database operations |
-| Hibernate | Spring Boot managed | ORM |
+| Hibernate | Spring Boot managed | Object-relational mapping |
 | Spring Security | Spring Boot managed | Application security |
 | JWT | 0.12.6 | Token-based authentication |
 | Lombok | Maven dependency | Boilerplate reduction |
@@ -98,7 +98,8 @@ The application follows a three-tier architecture consisting of the presentation
 | Jenkins | CI pipeline |
 | Docker | Containerization |
 | Docker Compose | Multi-container application configuration |
-| Kubernetes | Container orchestration configurations |
+| Kubernetes | Container orchestration |
+| Minikube | Local Kubernetes environment |
 | Terraform | Infrastructure as Code |
 | Microsoft Azure | Cloud infrastructure platform |
 | Prometheus | Metrics collection |
@@ -292,10 +293,10 @@ ecommerce_db
 ### Entity Relationships
 
 - User and Cart: One-to-One.
-- Cart and CartItem: One-to-Many relationship, represented through the CartItem owning side.
+- Cart and CartItem: One-to-Many relationship.
 - CartItem and Product: Many-to-One.
-- User and Order: Many-to-One from the Order side.
-- Order and OrderItem: One-to-Many relationship, represented through the OrderItem owning side.
+- User and Order: One-to-Many.
+- Order and OrderItem: One-to-Many relationship.
 - OrderItem and Product: Many-to-One.
 - Product and Category: Many-to-One.
 
@@ -307,7 +308,7 @@ The current local application configuration uses:
 |---|---|
 | Database | MySQL |
 | Database Name | ecommerce_db |
-| Local Host | localhost |
+| Host | localhost |
 | Port | 3306 |
 | Hibernate DDL Mode | update |
 | SQL Logging | Enabled |
@@ -469,7 +470,7 @@ The verified Jenkins Build #13 completed successfully.
 
 **Build Status: SUCCESS**
 
-Note: The current Jenkins backend build command uses `-DskipTests`, so backend tests are skipped in this pipeline.
+**Note:** The current Jenkins backend build command uses `-DskipTests`, so backend tests are skipped in this pipeline.
 
 ### Jenkins Screenshot
 
@@ -479,17 +480,11 @@ Note: The current Jenkins backend build command uses `-DskipTests`, so backend t
 
 ## 11. Kubernetes Container Orchestration
 
-The repository contains Kubernetes manifests in two directories.
+The React frontend and Spring Boot backend have been successfully deployed and verified on a local Kubernetes cluster using Minikube.
 
-## 11. Kubernetes Container Orchestration
-
-The application has been successfully deployed to a local Kubernetes cluster using Minikube.
-
-The project includes Kubernetes manifests for deploying and managing the frontend and backend containers.
+The repository contains Kubernetes manifests in two directories for configuring application deployments and services.
 
 ### 11.1 Kubernetes Configuration Files
-
-The repository contains Kubernetes manifests in two directories.
 
 **Local Kubernetes Configuration**
 
@@ -500,6 +495,7 @@ k8s/
 ```
 
 Contains:
+
 - Backend Deployment.
 - Backend NodePort Service.
 - Local backend Docker image configuration.
@@ -523,6 +519,7 @@ Contains:
 | frontend-service.yaml | Frontend Service |
 
 Additional configurations include:
+
 - Backend readiness probe.
 - Backend liveness probe.
 - Container port configuration.
@@ -531,9 +528,9 @@ Additional configurations include:
 
 ### 11.2 Verified Local Minikube Deployment
 
-The React frontend and Spring Boot backend have been successfully deployed and verified on a local Minikube Kubernetes cluster.
+The frontend and backend applications have been deployed and verified on a local Minikube Kubernetes cluster.
 
-**Deployment Environment:**
+**Deployment Environment**
 
 | Component | Details |
 |---|---|
@@ -542,7 +539,7 @@ The React frontend and Spring Boot backend have been successfully deployed and v
 | Cluster Node | minikube |
 | Environment | Local Development |
 
-**Deployment Status:**
+**Deployment Status**
 
 | Component | Kubernetes Resource | Status |
 |---|---|---|
@@ -551,10 +548,10 @@ The React frontend and Spring Boot backend have been successfully deployed and v
 | Frontend | Deployment | Running (1/1) |
 | Frontend | Pod | Running (1/1) |
 
-**Kubernetes Services:**
+**Kubernetes Services**
 
 | Service | Type | NodePort |
-|---|---|---|
+|---|---|---:|
 | ecommerce-backend | NodePort | 32442 |
 | ecommerce-frontend | NodePort | 30080 |
 
@@ -571,7 +568,7 @@ The following deployment checks were successfully completed:
 - Successfully accessed the backend health endpoint through its NodePort.
 - Verified Spring Boot Actuator health status.
 
-**Backend Health Check:**
+**Backend Health Check**
 
 Endpoint:
 
@@ -591,7 +588,7 @@ Verified response:
 }
 ```
 
-**Application Access:**
+**Application Access**
 
 | Component | Access URL |
 |---|---|
@@ -605,6 +602,8 @@ minikube ip
 ```
 
 **Note:** This is a verified local Minikube deployment. It is not an Azure Kubernetes Service (AKS) deployment.
+
+---
 
 ## 12. Infrastructure as Code – Terraform
 
@@ -679,11 +678,11 @@ The Nginx configuration provides:
 
 ### Azure Container Registry
 
-The project has also used Azure Container Registry to store container images.
+The project has previously used Azure Container Registry to store container images.
 
 The backend image was previously built and pushed to the configured registry.
 
-Azure resources and deployment configurations should be checked before assuming that a deployment endpoint is currently active.
+**Resource availability note:** Azure resources used during development have been deleted to avoid ongoing resource charges. Therefore, previously used Azure deployment endpoints and registry resources should not be assumed to be currently active.
 
 ---
 
@@ -933,7 +932,8 @@ Through this project, the following practical concepts are demonstrated:
 - CI/CD pipeline automation.
 - Jenkins pipeline configuration.
 - GitHub Actions workflow automation.
-- Kubernetes deployment configuration.
+- Kubernetes deployment and service configuration.
+- Local Kubernetes deployment using Minikube.
 - Terraform-based infrastructure provisioning.
 - Azure cloud infrastructure concepts.
 - Prometheus metrics integration.
@@ -943,13 +943,13 @@ Through this project, the following practical concepts are demonstrated:
 
 ## 19. Author
 
-**Hirunodhya**
+**R.W.A Kavishi Hirunodhya**
 
-GitHub: `Hirunodhya2003`
+GitHub: [Hirunodhya2003](https://github.com/Hirunodhya2003)
 
 Project: **Azure E-Commerce Platform**
 
-Repository: `azure-ecommerce-platform`
+Repository: [azure-ecommerce-platform](https://github.com/Hirunodhya2003/azure-ecommerce-platform.git)
 
 ---
 
