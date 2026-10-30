@@ -481,7 +481,17 @@ Note: The current Jenkins backend build command uses `-DskipTests`, so backend t
 
 The repository contains Kubernetes manifests in two directories.
 
-### 11.1 Local Kubernetes Configuration
+## 11. Kubernetes Container Orchestration
+
+The application has been successfully deployed to a local Kubernetes cluster using Minikube.
+
+The project includes Kubernetes manifests for deploying and managing the frontend and backend containers.
+
+### 11.1 Kubernetes Configuration Files
+
+The repository contains Kubernetes manifests in two directories.
+
+**Local Kubernetes Configuration**
 
 Directory:
 
@@ -490,13 +500,12 @@ k8s/
 ```
 
 Contains:
-
 - Backend Deployment.
 - Backend NodePort Service.
+- Local backend Docker image configuration.
+- Host-based MySQL database connection configuration.
 
-The configuration uses a local backend Docker image and connects to a host-based MySQL database.
-
-### 11.2 Kubernetes Application Configuration
+**Kubernetes Application Configuration**
 
 Directory:
 
@@ -509,23 +518,93 @@ Contains:
 | File | Description |
 |---|---|
 | backend-deployment.yaml | Backend Deployment |
-| backend-service.yaml | Backend ClusterIP Service |
+| backend-service.yaml | Backend Service |
 | frontend-deployment.yaml | Frontend Deployment |
-| frontend-service.yaml | Frontend NodePort Service |
+| frontend-service.yaml | Frontend Service |
 
 Additional configurations include:
-
 - Backend readiness probe.
 - Backend liveness probe.
 - Container port configuration.
 - Kubernetes Secret reference for database credentials.
-- Frontend NodePort service configuration.
+- Frontend NodePort Service configuration.
 
-These files provide Kubernetes deployment configurations for the application.
+### 11.2 Verified Local Minikube Deployment
 
-**Note:** Kubernetes manifest files are available in the repository. Their presence does not independently confirm an active production Kubernetes cluster.
+The React frontend and Spring Boot backend have been successfully deployed and verified on a local Minikube Kubernetes cluster.
 
----
+**Deployment Environment:**
+
+| Component | Details |
+|---|---|
+| Kubernetes Distribution | Minikube |
+| Kubernetes Version | v1.35.1 |
+| Cluster Node | minikube |
+| Environment | Local Development |
+
+**Deployment Status:**
+
+| Component | Kubernetes Resource | Status |
+|---|---|---|
+| Backend | Deployment | Running (1/1) |
+| Backend | Pod | Running (1/1) |
+| Frontend | Deployment | Running (1/1) |
+| Frontend | Pod | Running (1/1) |
+
+**Kubernetes Services:**
+
+| Service | Type | NodePort |
+|---|---|---|
+| ecommerce-backend | NodePort | 32442 |
+| ecommerce-frontend | NodePort | 30080 |
+
+### 11.3 Deployment Verification
+
+The following deployment checks were successfully completed:
+
+- Verified Minikube cluster availability.
+- Verified Kubernetes node status as Ready.
+- Verified backend and frontend deployments.
+- Verified both application pods are running.
+- Verified Kubernetes NodePort services.
+- Successfully accessed the frontend through the Minikube NodePort.
+- Successfully accessed the backend health endpoint through its NodePort.
+- Verified Spring Boot Actuator health status.
+
+**Backend Health Check:**
+
+Endpoint:
+
+```text
+http://<MINIKUBE-IP>:32442/actuator/health
+```
+
+Verified response:
+
+```json
+{
+  "groups": [
+    "liveness",
+    "readiness"
+  ],
+  "status": "UP"
+}
+```
+
+**Application Access:**
+
+| Component | Access URL |
+|---|---|
+| Frontend | `http://<MINIKUBE-IP>:30080` |
+| Backend Health | `http://<MINIKUBE-IP>:32442/actuator/health` |
+
+Replace `<MINIKUBE-IP>` with the IP address returned by:
+
+```bash
+minikube ip
+```
+
+**Note:** This is a verified local Minikube deployment. It is not an Azure Kubernetes Service (AKS) deployment.
 
 ## 12. Infrastructure as Code – Terraform
 
